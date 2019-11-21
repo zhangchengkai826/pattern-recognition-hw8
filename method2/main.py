@@ -63,6 +63,8 @@ def preprocess(im):
     im = im.crop((l, u, r, b))
     # 再次统一图片大小
     im = im.resize((IMG_SIZE, IMG_SIZE))
+    # 把图片旋转90度
+    im = im.rotate(90)
     
     im.save("{}\\{}.png".format(tmp_dir, tmp_cnt))
     tmp_cnt += 1
@@ -89,5 +91,5 @@ if __name__ == '__main__':
         elif file_name == label_file_name:
             for l in open('{}\\{}'.format(data_dir, file_name), 'r'):
                 labels.append(int(l))
-    # print(labels)
+    
 
