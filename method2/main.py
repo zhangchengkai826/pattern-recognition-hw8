@@ -9,7 +9,8 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 PREPROCESS_THRESHOLD = 32
-IMG_SIZE = 32
+IMG_SIZE = 96
+BORDER = 5
 
 tmp_cnt = 0
 tmp_dir = 'tmp'
@@ -31,33 +32,33 @@ def preprocess(im):
     r = w-1
     u = 0
     b = h-1
-    for x in range(1, w-1):
+    for x in range(BORDER, w-BORDER):
         is_blank = True
-        for y in range(1, h-1):
+        for y in range(BORDER, h-BORDER):
             if im.getpixel((x, y)) < PREPROCESS_THRESHOLD:
                 is_blank = False
         if not is_blank:
             l = x
             break
-    for x in range(w-2, 0, -1):
+    for x in range(w-BORDER-1, BORDER-1, -1):
         is_blank = True
-        for y in range(1, h-1):
+        for y in range(BORDER, h-BORDER):
             if im.getpixel((x, y)) < PREPROCESS_THRESHOLD:
                 is_blank = False
         if not is_blank:
             r = x
             break
-    for y in range(1, h-1):
+    for y in range(BORDER, h-BORDER):
         is_blank = True
-        for x in range(1, w-1):
+        for x in range(BORDER, w-BORDER):
             if im.getpixel((x, y)) < PREPROCESS_THRESHOLD:
                 is_blank = False
         if not is_blank:
             u = y
             break
-    for y in range(h-2, 0, -1):
+    for y in range(h-BORDER-1, BORDER-1, -1):
         is_blank = True
-        for x in range(1, w-1):
+        for x in range(BORDER, w-BORDER):
             if im.getpixel((x, y)) < PREPROCESS_THRESHOLD:
                 is_blank = False
         if not is_blank:
@@ -91,6 +92,10 @@ def preprocess(im):
 # 所以只需要看特征向量的第2个分量即可
 # 此时，分类准确率为76.54%
 # 错误分类信息详见error.log
+# 增大预处理后的图像尺寸（32x32 -> 64x64），分类准确率提升至91.36%
+# 再次增大预处理后的图像尺寸（64x64 -> 96x96），分类准确率提升至95.06%
+# 再次增大预处理后的图像尺寸（96x96 -> 128x128），分类准确率反而降低了，降至92.59%
+# 再次增大预处理后的图像尺寸（128x128 -> 256x256），分类准确率再次降低，降至86.42%
 def extrack_feature(im, s, e):
     total = e-s+1
     one = 0
